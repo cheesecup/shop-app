@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{layouts/layout1}">
+
+<!-- CSS -->
+<th:block layout:fragment="css">
+  <style>
+      .mb-3 {
+          margin-bottom: 15px;
+      }
+      .fieldError {
+          color: #bd2130;
+      }
+  </style>
+</th:block>
+
+<!-- JS -->
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+      $(document).ready(function () {
+          let errorMessage = [[${errorMessage}]];
+          if (errorMessage != null) {
+              alert(errorMessage);
+          }
+
+          bindDomEvent();
+      });
+
+      function bindDomEvent() {
+          $("#itemImg").on("change", function () {
+              let fileName = $(this).val().split("\\").pop(); // 이미지 파일명
+              let fileExt = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+              // 확장자 추출 후 이미지 파일 여부 확인
+              fileExt = fileExt.toLowerCase(); // 소문자 변환
+              if (fileExt != "jpg" && fileExt != "jpeg" && fileExt != "gif" && fileExt != "png" && fileExt != "bmp") {
+                  alert("(.jpg .jpeg .gif .png .bmp) 해당 이미지 파일만 등록이 가능합니다.");
+                  return;
+              }
+
+              $(this).siblings("#itemImgLabel").html(fileName);
+          })
+      };
+  </script>
+</th:block>
+
+<div layout:fragment="content">
+  <form role="form" th:object="${itemFormDto}">
+    <p class="h2">상품 정보</p>
+
+    <input type="hidden" th:field="*{id}">
+
+    <div class="mb-3">
+      <label for="itemNm" class="form-label">상품명</label>
+      <input type="text" class="form-control" id="itemNm" th:field="*{itemNm}" readonly>
+      <p th:if="${#fields.hasErrors('itemNm')}" th:errors="*{itemNm}" class="fieldError">Incorrect Data</p>
+    </div>
+
+    <div class="mb-3">
+      <label for="price" class="form-label">가격</label>
+      <input type="number" class="form-control" id="price" th:field="*{price}" readonly>
+      <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="fieldError">Incorrect Data</p>
+    </div>
+
+    <div class="mb-3">
+      <label for="stockNumber" class="form-label">재고</label>
+      <input type="number" class="form-control" id="stockNumber" th:field="*{stockNumber}" readonly>
+      <p th:if="${#fields.hasErrors('stockNumber')}" th:errors="*{stockNumber}" class="fieldError">Incorrect Data</p>
+    </div>
+
+    <div class="mb-3">
+      <label for="itemDetail" class="form-label">상품 상세 내용</label>
+      <textarea class="form-control" id="itemDetail" th:field="*{itemDetail}" rows="3" readonly></textarea>
+      <p th:if="${#fields.hasErrors('itemDetail')}" th:errors="*{itemDetail}" class="fieldError">Incorrect Data</p>
+    </div>
+
+    <div class="mb-3">
+      <label for="stockNumber" class="form-label">판매 상태</label>
+      <br>
+      <h3><span class="badge text-bg-primary mgb-15" th:if="${itemFormDto.itemSellStatus.toString() == 'SELL'}">판매중</span></h3>
+      <h3><span class="badge text-bg-danger mgb-15" th:unless="${itemFormDto.itemSellStatus.toString() == 'SELL'}">품절</span></h3>
+    </div>
+
+    <hr>
+    <div class="row row-cols-1 row-cols-md-3 g-4" th:if="${not #lists.isEmpty(itemFormDto.itemImgDtoList)}">
+      <div class="col" th:if="${!itemImg.imgName.isEmpty()}" th:each="itemImg, status: ${itemFormDto.itemImgDtoList}">
+          <img class="card-img-top" th:src="${itemImg.imgUrl}" th:alt="${itemImg.imgName}">
+          <div class="card-body">
+            <h5 class="card-title" th:text="${itemImg.oriImgName}"></h5>
+          </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 15px;" sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+      <a class="btn btn-primary" th:href="@{/admin/items/update/{itemId}(itemId = *{id})}" role="button">수정하기</a>
+    </div>
+  </form>
+</div>
+</html>

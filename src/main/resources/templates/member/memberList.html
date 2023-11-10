@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<div layout:fragment="content">
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">이름</th>
+      <th scope="col">이메일</th>
+      <th scope="col">주소</th>
+      <th scope="col">직책</th>
+      <th scope="col">등록일</th>
+    </tr>
+    </thead>
+    <tbody class="table-group-divider">
+    <tr th:each="member : ${members}" th:onclick="|location.href='@{/admin/members/{memberId}(memberId = ${member.getId()})}'|">
+      <th scope="row" th:text="${member.getId()}">member_id</th>
+      <td th:text="${member.getName()}">member_name</td>
+      <td th:text="${member.getEmail()}">email</td>
+      <td th:text="${member.getAddress()}">address</td>
+      <td th:if="${member.getRole().toString()} == 'ADMIN' ? '관리자' : '고객'">관리자</td>
+      <td th:text="${#temporals.format(member.getRegTime(), 'yyyy-MM-dd')}">reg_time</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</html>

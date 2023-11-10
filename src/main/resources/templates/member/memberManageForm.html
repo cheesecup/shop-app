@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<!-- CSS -->
+<th:block layout:fragment="css">
+</th:block>
+
+<!-- JS -->
+<th:block layout:fragment="script">
+</th:block>
+
+
+<div layout:fragment="content">
+  <form role="form" th:object="${member}">
+    <div class="mb-3">
+      <label class="form-label">고유번호</label>
+      <input type="text" class="form-control" th:field="*{id}" readonly>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">이름</label>
+      <input type="text" class="form-control" th:field="*{name}" readonly>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">이메일</label>
+      <input type="email" class="form-control" th:field="*{email}" readonly>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">주소</label>
+      <input type="email" class="form-control" th:field="*{address}" readonly>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">권한</label>
+      <input type="email" class="form-control" th:field="*{role}" readonly>
+    </div>
+  </form>
+</div>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/layout1}">
+
+<div layout:fragment="content">
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">상품명</th>
+      <th scope="col">가격</th>
+      <th scope="col">재고</th>
+      <th scope="col">판매상태</th>
+      <th scope="col">판매자</th>
+      <th scope="col">등록일</th>
+    </tr>
+    </thead>
+    <tbody class="table-group-divider">
+    <tr th:each="item : ${items}" th:onclick="|location.href='@{/items/info/{itemId}(itemId = ${item.getId()})}'|">
+      <th scope="row" th:text="${item.id}">item_id</th>
+      <td th:text="${item.itemNm}">item_nm</td>
+      <td th:text="${item.price}">price</td>
+      <td th:text="${item.stockNumber}">stock_number</td>
+      <td th:text="${item.itemSellStatus.toString()} == 'SELL' ? '판매중' : '재고 소진'">item_sell_status</td>
+      <td th:text="${item.createdBy}">created_by</td>
+      <td th:text="${#temporals.format(item.regTime, 'yyyy-MM-dd HH:mm')}">reg_time</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</html>
